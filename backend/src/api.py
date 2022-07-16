@@ -18,7 +18,7 @@ def after_request(response):
         "Access-Control-Allow-Headers", "Content-Type,Authorization,true"
     )
     response.headers.add(
-        "Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"
+        "Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS"
     )
     return response
 
@@ -78,6 +78,7 @@ def get_drinks():
         or appropriate status code indicating reason for failure
 '''
 @app.route("/drinks", methods=["POST"])
+@requires_auth("post:drinks")
 def create_drinks():
     body = request.get_json()
 
@@ -91,7 +92,7 @@ def create_drinks():
         return jsonify(
             {
                 "success": True,
-                "drinks": [drink]
+                "drinks": [drink.long()]
             }
         )
 
@@ -111,7 +112,35 @@ def create_drinks():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
+@app.route("/drinks/<int:id>", methods=["PATCH"])
+@requires_auth("patch:drinks")
+def create_drinks(id):
+    drink = Drink.query.filter(Drink.id == id).one_or_none()
 
+    if drink is None:
+        abort(404)
+
+    body = request.get_json()
+
+    new_title = body.get("title", None)
+    new_recipe = body.get("recipe", None)
+
+    try:
+        drink.title = drink.title if new_title is None else new_title
+        drink.recipe = drink.recipe if new_recipe is None else new_recipe
+
+        drink.update()
+
+        return jsonify(
+            {
+                "success": True,
+                "drinks": [drink.long()]
+            }
+        )
+
+    except:
+        print (sys.exc_info())
+        abort(422)
 
 '''
 @TODO implement endpoint
@@ -123,14 +152,32 @@ def create_drinks():
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
+@app.route("/drinks/<int:id>", methods=["DELETE"])
+@requires_auth("delete:drinks")
+def delete_question(id):
+    try:
+        drink = Drink.query.filter(Drink.id == id).one_or_none()
+
+        if drink is None:
+            abort(404)
+
+        drink.delete()
+
+        return jsonify(
+            {
+                "success": True
+            }
+        )
+
+    except:
+        print (sys.exc_info())
+        abort(422)
 
 
 # Error Handling
 '''
 Example error handling for unprocessable entity
 '''
-
-
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({
