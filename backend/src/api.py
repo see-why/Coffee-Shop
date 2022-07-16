@@ -59,7 +59,7 @@ def get_drinks():
 '''
 @app.route('/drinks-detail')
 @requires_auth("get:drinks-detail")
-def get_drinks_details():
+def get_drinks_details(payload):
     drinks = Drink.query.order_by(desc(Drink.id)).all()
     formatted_drinks = [drink.long() for drink in drinks]
 
@@ -79,14 +79,14 @@ def get_drinks_details():
 '''
 @app.route("/drinks", methods=["POST"])
 @requires_auth("post:drinks")
-def create_drinks():
+def create_drinks(payload):
     body = request.get_json()
 
     new_title = body.get("title", None)
     new_recipe = body.get("recipe", None)
 
     try:
-        drink = Drink(title=new_title, recipe=new_recipe)
+        drink = Drink(title=new_title, recipe=json.dumps([new_recipe]))
         drink.insert()
 
         return jsonify(
@@ -114,7 +114,7 @@ def create_drinks():
 '''
 @app.route("/drinks/<int:id>", methods=["PATCH"])
 @requires_auth("patch:drinks")
-def update_drinks(id):
+def update_drinks(payload, id):
     drink = Drink.query.filter(Drink.id == id).one_or_none()
 
     if drink is None:
@@ -154,7 +154,7 @@ def update_drinks(id):
 '''
 @app.route("/drinks/<int:id>", methods=["DELETE"])
 @requires_auth("delete:drinks")
-def delete_drink(id):
+def delete_drink(payload, id):
     try:
         drink = Drink.query.filter(Drink.id == id).one_or_none()
 
@@ -240,6 +240,6 @@ def not_found(error):
 def not_found(error):
     return jsonify({
         "success": False, 
-        "error": 401,
-        "message": f" {error['code']} : {error['description']}"
-        }), 401
+        "error": error.status_code,
+        "message": error.error['description']
+        }), error.status_code
