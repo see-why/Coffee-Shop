@@ -59,7 +59,7 @@ def get_drinks():
 '''
 @app.route('/drinks-detail')
 @requires_auth("get:drinks-detail")
-def get_drinks():
+def get_drinks_details():
     drinks = Drink.query.order_by(desc(Drink.id)).all()
     formatted_drinks = [drink.long() for drink in drinks]
 
@@ -114,7 +114,7 @@ def create_drinks():
 '''
 @app.route("/drinks/<int:id>", methods=["PATCH"])
 @requires_auth("patch:drinks")
-def create_drinks(id):
+def update_drinks(id):
     drink = Drink.query.filter(Drink.id == id).one_or_none()
 
     if drink is None:
@@ -154,7 +154,7 @@ def create_drinks(id):
 '''
 @app.route("/drinks/<int:id>", methods=["DELETE"])
 @requires_auth("delete:drinks")
-def delete_question(id):
+def delete_drink(id):
     try:
         drink = Drink.query.filter(Drink.id == id).one_or_none()
 
