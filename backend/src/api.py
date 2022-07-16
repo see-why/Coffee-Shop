@@ -11,7 +11,17 @@ app = Flask(__name__)
 setup_db(app)
 CORS(app)
 
-'''
+@app.after_request
+def after_request(response):
+    response.headers.add(
+        "Access-Control-Allow-Headers", "Content-Type,Authorization,true"
+    )
+    response.headers.add(
+        "Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"
+    )
+    return response
+    
+'''   
 @TODO uncomment the following line to initialize the datbase
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
