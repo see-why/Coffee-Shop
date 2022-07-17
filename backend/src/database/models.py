@@ -2,8 +2,11 @@ import os
 from sqlalchemy import Column, String, Integer
 from flask_sqlalchemy import SQLAlchemy
 import json
+from dotenv import load_dotenv
 
-database_filename = "database.db"
+load_dotenv()  # take environment variables from .env.
+
+database_filename = os.environ.get("database_filename")
 project_dir = os.path.dirname(os.path.abspath(__file__))
 database_path = "sqlite:///{}".format(os.path.join(project_dir, database_filename))
 

@@ -21,6 +21,7 @@ npm-debug.log*
 coverage/
 www/
 node_modules/
+coffee-shop/
 tmp/
 temp/
 platforms/
@@ -28,7 +29,7 @@ plugins/
 plugins/android.json
 plugins/ios.json
 $RECYCLE.BIN/
-
+coffeeShop/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate

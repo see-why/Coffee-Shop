@@ -1,4 +1,5 @@
 venv/
+./coffeeShop/
 .vscode/
 __pycache__/
 test.db
@@ -10,5 +11,6 @@ test.db
 ._*
 .Spotlight-V100
 .Trashes
+.env
 ehthumbs.db
 Thumbs.db
