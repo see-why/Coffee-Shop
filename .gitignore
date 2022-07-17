@@ -1,4 +1,5 @@
 venv/
+./coffeeShop/
 .vscode/
 __pycache__/
 test.db
