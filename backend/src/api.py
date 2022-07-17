@@ -126,7 +126,8 @@ def delete_drink(payload, id):
 
         return jsonify(
             {
-                "success": True
+                "success": True,
+                "delete": id
             }
         )
 
